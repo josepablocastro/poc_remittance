@@ -20,7 +20,10 @@ func NewDBAdapter(dataSourceUrl string) (*db.Adapter, error) {
 	return db.NewAdapter(dataSourceUrl)
 }
 
-func (a Application) ReceivePayment(payment domain.Payment) (domain.Payment, error) {
+// func (a Application) ReceivePayment(payment domain.Payment) (domain.Payment, error) {
+func (a Application) ReceivePayment(number string, sender string, beneficiary string, amount float32, currency string) (domain.Payment, error) {
+	payment := domain.ReceivePayment(number, sender, beneficiary, amount, currency)
+
 	err := a.db.Save(&payment)
 	if err != nil {
 		return domain.Payment{}, err
