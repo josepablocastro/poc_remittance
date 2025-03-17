@@ -66,7 +66,7 @@ func (a Adapter) Save(payment *domain.Payment) error {
 		State:       payment.State,
 	}
 	res := a.db.Create(&paymentModel)
-	if res.Error != nil {
+	if res.Error == nil {
 		payment.ID = int64(paymentModel.ID)
 	}
 	return res.Error
@@ -74,7 +74,7 @@ func (a Adapter) Save(payment *domain.Payment) error {
 
 func (a Adapter) UpdateState(payment *domain.Payment, newState string) error {
 	res := a.db.Model(&Payment{}).Where("number = ?", payment.Number).Update("State", newState)
-	if res.Error != nil {
+	if res.Error == nil {
 		payment.State = newState
 	}
 	return res.Error
