@@ -30,3 +30,11 @@ func (a Application) ReceivePayment(number string, sender string, beneficiary st
 	}
 	return payment, nil
 }
+
+func (a Application) AcceptPayment(number string, reject bool) (domain.Payment, error) {
+	if reject {
+		return a.db.RejectPayment(number)
+	} else {
+		return a.db.AcceptPayment(number)
+	}
+}

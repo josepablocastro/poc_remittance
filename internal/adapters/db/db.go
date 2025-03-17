@@ -73,9 +73,27 @@ func (a Adapter) Save(payment *domain.Payment) error {
 }
 
 func (a Adapter) UpdateState(payment *domain.Payment, newState string) error {
-	res := a.db.Model(&Payment{}).Where("ID = ?", payment.ID).Update("State", newState)
+	res := a.db.Model(&Payment{}).Where("number = ?", payment.Number).Update("State", newState)
 	if res.Error != nil {
 		payment.State = newState
 	}
 	return res.Error
+}
+
+func (a Adapter) AcceptPayment(number string) (domain.Payment, error) {
+	payment, err := a.GetByNumber(number)
+	if err != nil {
+		return domain.Payment{}, err
+	}
+	err = a.UpdateState(&payment, "accepted")
+	return payment, err
+}
+
+func (a Adapter) RejectPayment(number string) (domain.Payment, error) {
+	payment, err := a.GetByNumber(number)
+	if err != nil {
+		return domain.Payment{}, err
+	}
+	err = a.UpdateState(&payment, "rejected")
+	return payment, err
 }
